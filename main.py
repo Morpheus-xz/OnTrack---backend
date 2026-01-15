@@ -62,17 +62,16 @@ def run_ai(user_id: str):
     result = run_career_ai(onboarding, assessment, career_list)
 
     # Save AI result
-    supabase.table("users_state").update({
+    supabase.table("users_state").upsert({
+        "user_id": user_id,
         "current_career": result["career"],
         "career_explanation": result["explanation"],
         "current_skills": result["current_skills"],
         "missing_skills": result["missing_skills"],
         "learning_plan": result["learning_plan"],
-
-        # 🔥 THESE TWO LINES FIX EVERYTHING
-        "has_completed_onboarding": True,
-        "has_completed_assessment": True
-    }).eq("user_id", user_id).execute()
+        "has_completed_assessment": True,
+        "has_completed_onboarding": True
+    }).execute()
 
     # 🔥 Find learning resources
     resources = find_resources_for_skills(result["missing_skills"])
