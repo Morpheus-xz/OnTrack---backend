@@ -111,3 +111,8 @@ def ai_coach(user_id: str, message: dict):
     reply = coach_reply(user_msg, state, resources)
 
     return {"reply": reply}
+
+import uvicorn
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
