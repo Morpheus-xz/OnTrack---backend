@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body, HTTPException
 from supabase_client import supabase
 from ai_engine import run_career_ai, find_resources_for_skills, coach_reply
 from fastapi.middleware.cors import CORSMiddleware
@@ -64,6 +64,9 @@ def run_ai(user_id: str):
 
     # Run AI
     result = run_career_ai(onboarding, assessment, career_list)
+    if "error" in result:
+        print("🚨 AI ENGINE FAILED:", result)  # This will print to your Render logs
+        raise HTTPException(status_code=500, detail=f"AI Error: {result.get('details')}")
 
     # Save AI result
     supabase.table("users_state").upsert({
